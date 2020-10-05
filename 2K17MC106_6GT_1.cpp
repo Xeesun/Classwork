@@ -1,68 +1,76 @@
 #include<iostream>
-#include <bits/stdc++.h> 
+#include<vector>
+#include<bits/stdc++.h>
+#define inf 99999
 using namespace std; 
-#define MAX 99999 
 
-void printSolution(int **cost, int V) { 
-	cout<<"Pair wise shortest distance matrix" << endl; 
-	for (int i = 0; i < V; i++) { 
-		for (int j = 0; j < V; j++) { 
-			if (cost[i][j] == MAX) 
-				cout<<"inf"<<"	 "; 
-			else
-				cout<<cost[i][j]<<"	 "; 
+void shortestDist(vector<vector<int> > distance, int V){ 
+	cout<<"Distance Matrix" << endl; 
+	for (int i = 0; i < V; i++)
+	{ 
+		for (int j = 0; j < V; j++)
+		{ 
+            if (distance[i][j] == inf){   
+                cout<<"inf"<<"     ";  
+			} else {
+				cout << distance[i][j] << "	 "; 	
+			}
 		} 
 		cout<<endl; 
 	} 
 } 
 
-void floydWarshall (int **graph, int V) { 
-	int **cost = new int*[V];
-	for(int i = 0; i<V; i++){
-		cost[i] = new int[V];
-		for(int j = 0; j<V; j++){
-			cost[i][j] = 0;
-		}
-	}
+void floydWarshall (vector<vector<int> > Matrix, int V) { 
+	vector<vector<int> > distance;
+	int i, j, k; 
 
-	for (int i = 0; i < V; i++) {
-		for (int j = 0; j < V; j++) {
-			if(graph[i][j] == 0 && i!=j){
-				cost[i][j] = MAX;
-			} else {
-				cost[i][j] = graph[i][j];	
-			}
-		}
-	}
-			 
+	for (int i = 0; i < V; i++){
+		vector<int> distanceI;
+		for (int j = 0; j < V; j++){
+				distanceI.push_back(Matrix[i][j]);	
+		} 		 
+		distance.push_back(distanceI);
+	} 
+		
 
-	for (int k = 0; k < V; k++) { 
-		for (int i = 0; i < V; i++) { 
-			for (int j = 0; j < V; j++) {  
-				if (cost[i][k] + cost[k][j] < cost[i][j]) 
-					cost[i][j] = cost[i][k] + cost[k][j]; 
+	for (int k = 0; k < V; k++){ 
+		for (int i = 0; i < V; i++){ 
+			for (int j = 0; j < V; j++){  
+				if (distance[i][k] + distance[k][j] < distance[i][j]){
+					distance[i][j] = distance[i][k] + distance[k][j];	
+				} 
 			} 
 		} 
 	} 
 
-	printSolution(cost, V); 
+	shortestDist(distance, V); 
 } 
 
 int main() { 
-	
 	int V;
-	cout << "Enter total number of vertices" << endl;
+	cout << "Enter the total vertices in the graph" << endl;
 	cin >> V;
-	int **graph = new int*[V];
+	
+	vector<vector<int> > Matrix;
 	for(int i = 0; i<V; i++){
-		graph[i] = new int[V];
+		vector<int> VertexI;
 		for(int j = 0; j<V; j++){
-			cin >> graph[i][j];
+			int e;
+			cin >> e;
+			VertexI.push_back(e);
+		}
+		Matrix.push_back(VertexI);
+	}
+	
+	for(int i = 0; i<V; i++){
+		for(int j = 0; j<V; j++){
+			if(Matrix[i][j] == 0 && i!=j){
+				Matrix[i][j] = inf;
+			}
 		}
 	}
 
-	floydWarshall(graph, V); 
+	floydWarshall(Matrix, V); 
 	return 0; 
 } 
-
 
